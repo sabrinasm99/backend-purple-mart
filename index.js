@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const app = express();
 const routes = require('./routes');
+const PORT = process.env.PORT || 5000;
 
 mongoose.connect('mongodb://admin:admin@cluster0-shard-00-00-l0cdv.mongodb.net:27017,cluster0-shard-00-01-l0cdv.mongodb.net:27017,cluster0-shard-00-02-l0cdv.mongodb.net:27017/minimarket?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority',
 {useNewUrlParser: true, useUnifiedTopology: true},
@@ -27,4 +28,4 @@ app.use((err, req, res, next) => {
         stack: err.stack
     });
 })
-app.listen(5000, () => console.log('SERVER CONNECTED ON PORT 5000'));
+app.listen(PORT, () => console.log(`SERVER CONNECTED ON PORT ${PORT}`));
