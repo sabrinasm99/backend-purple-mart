@@ -36,7 +36,7 @@ exports.uploadProduct = async (req, res, next) => {
     newProduct.image = `image/${pictName}_${time}.${jpg}`;
     // console.log(newProduct.image, "NEWPRODUCTIMAGE");
     const dataUploaded = await newProduct.save();
-    // axios.post('https://api.netlify.com/build_hooks/5eedd6d869e70dba83a4fe29');
+    axios.post('https://api.netlify.com/build_hooks/5eedd6d869e70dba83a4fe29');
     res.json(dataUploaded);
   } catch (e) {
     next(e);
@@ -85,7 +85,7 @@ exports.removeProduct = async (req, res, next) => {
       await fse.remove(`./${file}`);
       console.log("Success Delete Image");
       const dataRemoved = await data.remove();
-      // axios.post('https://api.netlify.com/build_hooks/5eedd6d869e70dba83a4fe29');
+      axios.post('https://api.netlify.com/build_hooks/5eedd6d869e70dba83a4fe29');
       return res.json({ msg: `${name} removed`, data: dataRemoved });
     } else {
       throw new Error("Data is not found");
