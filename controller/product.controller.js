@@ -27,11 +27,14 @@ exports.uploadProduct = async (req, res, next) => {
       price: req.body.price,
     });
     const productImage = req.files.productImage;
-    console.log(productImage, "PRODUCTIMAGE");
+    // console.log(productImage, "PRODUCTIMAGE");
+    const productImageName = req.files.productImage.name;
+    const pictName = productImageName.split('.')[0];
+    const jpg = productImageName.split('.')[1];
     const time = (new Date()).getTime();
-    await productImage.mv(`./image/${req.files.productImage.name}_${time}`);
-    newProduct.image = `image/${productImage.name}_${time}`;
-    console.log(newProduct.image, "NEWPRODUCTIMAGE");
+    await productImage.mv(`./image/${pictName}_${time}.${jpg}`);
+    newProduct.image = `image/${pictName}_${time}.${jpg}`;
+    // console.log(newProduct.image, "NEWPRODUCTIMAGE");
     const dataUploaded = await newProduct.save();
     // axios.post('https://api.netlify.com/build_hooks/5eedd6d869e70dba83a4fe29');
     res.json(dataUploaded);
@@ -53,9 +56,12 @@ exports.updateProduct = async (req, res, next) => {
         // request new file {object}
         await fse.remove(`./${oldImage}`); // remove old image file
         const newImage = req.files.productImage; // new image file {object}
+        const newImageName = req.files.productImage.name;
+        const pictName = newImageName.split('.')[0];
+        const jpg = newImageName.split('.')[1];
         const time = (new Date()).getTime();
-        await newImage.mv(`./image/${newImage.name}_${time}`); // move new image file to directory
-        data.image = `image/${newImage.name}_${time}`; // save new image file in database (only string)
+        await newImage.mv(`./image/${pictName}_${time}.${jpg}`); // move new image file to directory
+        data.image = `image/${pictName}_${time}.${jpg}`; // save new image file in database (only string)
       }
       const savedData = await data.save();
       axios.post('https://api.netlify.com/build_hooks/5eedd6d869e70dba83a4fe29');
@@ -79,7 +85,7 @@ exports.removeProduct = async (req, res, next) => {
       await fse.remove(`./${file}`);
       console.log("Success Delete Image");
       const dataRemoved = await data.remove();
-      axios.post('https://api.netlify.com/build_hooks/5eedd6d869e70dba83a4fe29');
+      // axios.post('https://api.netlify.com/build_hooks/5eedd6d869e70dba83a4fe29');
       return res.json({ msg: `${name} removed`, data: dataRemoved });
     } else {
       throw new Error("Data is not found");
