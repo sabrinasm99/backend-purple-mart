@@ -24,7 +24,7 @@ exports.registerAdmin = async (req, res, next) => {
 // LOGIN ADMIN
 exports.loginAdmin = async (req, res, next) => {
   try {
-    const result = await Users.findOne({ username: "admin" });
+    const result = await Users.findOne({ username: req.body.username });
     if (result) {
       const isMatch = await bcrypt.compare(req.body.password, result.password);
       if (isMatch) {
@@ -101,6 +101,7 @@ exports.loginMember = async (req, res, next) => {
         return res.json({
           message: "Happy Shopping",
           token: token,
+          name: result.name
         });
       }
     }

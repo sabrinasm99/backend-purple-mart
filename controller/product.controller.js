@@ -35,7 +35,9 @@ exports.uploadProduct = async (req, res, next) => {
     newProduct.image = `image/${pictName}_${time}.${jpg}`;
     const dataUploaded = await newProduct.save();
     // axios.post('https://api.netlify.com/build_hooks/5eedd6d869e70dba83a4fe29');
-    res.json(dataUploaded);
+    res.json({
+      message: 'Success Uploaded',
+      data: dataUploaded});
   } catch (e) {
     next(e);
   }
