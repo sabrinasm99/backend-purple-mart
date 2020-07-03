@@ -8,7 +8,7 @@ exports.registerAdmin = async (req, res, next) => {
     const data = await Users.findOne({ role: "admin" });
     if (!data) {
       const newAdmin = new Users({
-        role: 'admin',
+        role: "admin",
         username: "admin",
       });
       const hash = await bcrypt.hash("admin", 10);
@@ -28,11 +28,9 @@ exports.loginAdmin = async (req, res, next) => {
     if (result) {
       const isMatch = await bcrypt.compare(req.body.password, result.password);
       if (isMatch) {
-        console.log(isMatch, "ini isMatch");
         const payload = {
           username: result.username,
         };
-        console.log(payload);
         const token = await new Promise((resolve, reject) => {
           jwt.sign(
             payload,
@@ -47,6 +45,7 @@ exports.loginAdmin = async (req, res, next) => {
         return res.json({
           success: true,
           token: token,
+          name: result.username,
         });
       }
       throw new Error("Wrong Password");
@@ -57,14 +56,24 @@ exports.loginAdmin = async (req, res, next) => {
   }
 };
 
+// GET ADMIN
+exports.getAdmin = async (req, res, next) => {
+  try {
+    const result = await Users.find({ role: "admin" });
+    return res.json(result);
+  } catch (e) {
+    next(e);
+  }
+};
+
 // REGISTER MEMBER
 exports.registerMember = async (req, res, next) => {
   try {
     const newUser = new Users({
-      role: 'member',
+      role: "member",
       name: req.body.name,
       username: req.body.username,
-      address: req.body.address
+      address: req.body.address,
     });
     const hash = await bcrypt.hash(req.body.password, 10);
     newUser.password = hash;
@@ -79,13 +88,13 @@ exports.registerMember = async (req, res, next) => {
 exports.loginMember = async (req, res, next) => {
   try {
     const result = await Users.findOne({
-      username: req.body.username
+      username: req.body.username,
     });
     if (result) {
       const isMatch = await bcrypt.compare(req.body.password, result.password);
       if (isMatch) {
         const payload = {
-          username: result.username
+          username: result.username,
         };
         const token = await new Promise((resolve, reject) => {
           jwt.sign(
@@ -101,7 +110,7 @@ exports.loginMember = async (req, res, next) => {
         return res.json({
           message: "Happy Shopping",
           token: token,
-          name: result.name
+          name: result.name,
         });
       }
     }
@@ -110,3 +119,25 @@ exports.loginMember = async (req, res, next) => {
     next(e);
   }
 };
+
+// CHECK TOKEN
+exports.checkToken = async (req, res, next) => {
+  try {
+    const tokenLS = req.headers.authorization;
+    const auth = await new Promise((resolve, reject) => {
+      jwt.verify(tokenLS, "nyongpenyi", (err, auth) => {
+        if (err) reject(new Error("Login Dulu"));
+        resolve(auth);
+      });
+    });
+    if (auth) {
+      return res.json({msg: 'Success check token'})
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+// exports.checkToken = (req, res) => {
+//   res.json({auth: true});
+// }

@@ -1,10 +1,11 @@
 const router = require('express').Router();
-const { exec } = require("child_process");
-const fs = require('fs');
+// const { exec } = require("child_process");
+// const fs = require('fs');
 
 module.exports = {
     product: router.use('/product', require('./product.routes')),
     user: router.use('/user', require('./user.routes')),
+    order: router.use('/order', require('./order.routes'))
     // aslok: router.get('/aslok', (req,res) => {
     //     const {value1, value2} = req.body;
     //     fs.writeFile('parameter.json', JSON.stringify(), () => {

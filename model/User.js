@@ -7,12 +7,14 @@ const Users = new Schema({
     },
     name : {
         type: String,
+        minlength: 3,
         required: function() {
             return this.role === 'member'
         }
     },
     username: {
         type: String,
+        unique: true,
         required: true
     },
     password: {

@@ -1,11 +1,27 @@
 const Products = require("../model/Product");
 const fse = require("fs-extra");
-const axios = require('axios');
+const Fuse = require('fuse.js');
+
+const options = {
+  includeScore: true,
+  keys: ['name']
+}
 
 exports.getAllProduct = async (req, res, next) => {
   try {
     const data = await Products.find();
-    return res.json(data);
+    let result = [...data];
+    
+    const fuse = new Fuse(result, options);
+    if (req.query.search) {
+      result = fuse.search(req.query.search).map(val => {
+        return {
+          ...val.item._doc,
+          score: (1 - val.score) * 100
+        }
+      })
+    };
+    return res.json(result);
   } catch (e) {
     next(e);
   }
@@ -45,7 +61,6 @@ exports.uploadProduct = async (req, res, next) => {
 
 exports.updateProduct = async (req, res, next) => {
   try {
-    console.log("Masuk Router Put");
     const data = await Products.findById(req.params.id);
     if (data) {
       data.name = req.body.name;
@@ -76,14 +91,11 @@ exports.updateProduct = async (req, res, next) => {
 
 exports.removeProduct = async (req, res, next) => {
   try {
-    console.log("Masuk Router Delete");
     const data = await Products.findById(req.params.id);
     if (data) {
-      console.log("Masuk IF DATA");
       const file = data.image;
       const name = data.name;
       await fse.remove(`./${file}`);
-      console.log("Success Delete Image");
       const dataRemoved = await data.remove();
       // axios.post('https://api.netlify.com/build_hooks/5eedd6d869e70dba83a4fe29');
       return res.json({ msg: `${name} removed`, data: dataRemoved });
