@@ -41,6 +41,7 @@ exports.uploadProduct = async (req, res, next) => {
     const newProduct = new Products({
       name: req.body.name,
       price: req.body.price,
+      category: req.body.category
     });
     const productImage = req.files.productImage;
     const productImageName = req.files.productImage.name;
@@ -65,6 +66,7 @@ exports.updateProduct = async (req, res, next) => {
     if (data) {
       data.name = req.body.name;
       data.price = req.body.price;
+      data.category = req.body.category;
       const oldImage = data.image; // old image file in database
 
       if (req.files) {

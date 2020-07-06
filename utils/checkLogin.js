@@ -10,7 +10,6 @@ const checkLogin = () => {
           resolve(auth);
         });
       });
-      console.log(auth, "ini authhhhh");
       if (auth) {
         const result = await Users.findOne({username: auth.username});
         if (result) {

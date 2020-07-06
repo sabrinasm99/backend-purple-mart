@@ -1,7 +1,7 @@
 const checkAdmin = () => {
   return (req, res, next) => {
     try {
-      if (req.role === "admin") {
+      if (role === "admin") {
         next();
       } else {
         throw new Error("Anda bukan admin");
