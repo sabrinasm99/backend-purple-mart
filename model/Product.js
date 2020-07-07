@@ -9,6 +9,10 @@ const Products = new Schema({
         type: String,
         required: true
     },
+    queryCategory: {
+        type: String,
+        required: true
+    },
     image: {
         type: String,
         required: true

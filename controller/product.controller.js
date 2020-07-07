@@ -27,6 +27,25 @@ exports.getAllProduct = async (req, res, next) => {
   }
 };
 
+exports.getCategoryProduct = async (req, res, next) => {
+  try {
+    const data = await Products.find();
+    const filterData = data.filter(val => val.queryCategory === req.query.queryCategory);
+    let result = [...filterData];
+    if (req.query.search) {
+      result = fuse.search(req.query.search).map(val => {
+        return {
+          ...val.item._doc,
+          score: (1 - val.score) * 100
+        }
+      })
+    }
+    return res.json(result);
+  } catch (e) {
+    next(e);
+  }
+}
+
 exports.getSpecificProduct = async (req, res, next) => {
   try {
     const data = await Products.findById(req.params.id);
@@ -41,7 +60,8 @@ exports.uploadProduct = async (req, res, next) => {
     const newProduct = new Products({
       name: req.body.name,
       price: req.body.price,
-      category: req.body.category
+      category: req.body.category,
+      queryCategory: req.body.category.split(' ')[0]
     });
     const productImage = req.files.productImage;
     const productImageName = req.files.productImage.name;
@@ -67,6 +87,7 @@ exports.updateProduct = async (req, res, next) => {
       data.name = req.body.name;
       data.price = req.body.price;
       data.category = req.body.category;
+      data.queryCategory = req.body.category.split(' ')[0];
       const oldImage = data.image; // old image file in database
 
       if (req.files) {
