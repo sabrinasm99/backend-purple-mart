@@ -5,17 +5,17 @@ const checkLogin = () => {
   return async (req, res, next) => {
     try {
       const auth = await new Promise((resolve, reject) => {
-        jwt.verify(req.headers.authorization, process.env.JWT_PASS, (err, auth) => {
+        jwt.verify(req.headers.authorization, "nyongpenyi", (err, auth) => {
           if (err) reject(new Error("Login Dulu"));
           resolve(auth);
         });
       });
       if (auth) {
-        const result = await Users.findOne({username: auth.username});
+        const result = await Users.findOne({ username: auth.username });
         if (result) {
           role = result.role;
-          name = result.name ? result.name : '';
-          address = result.address ? result.address : '';
+          name = result.name ? result.name : "";
+          address = result.address ? result.address : "";
           next();
         }
       }

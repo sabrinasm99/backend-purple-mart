@@ -34,7 +34,7 @@ exports.loginAdmin = async (req, res, next) => {
         const token = await new Promise((resolve, reject) => {
           jwt.sign(
             payload,
-            process.env.JWT_PASS,
+            "nyongpenyi",
             { expiresIn: "30m" },
             (err, token) => {
               if (err) reject(err);
@@ -99,7 +99,7 @@ exports.loginMember = async (req, res, next) => {
         const token = await new Promise((resolve, reject) => {
           jwt.sign(
             payload,
-            process.env.JWT_PASS,
+            "nyongpenyi",
             { expiresIn: "30m" },
             (err, token) => {
               if (err) reject(err);
@@ -125,19 +125,15 @@ exports.checkToken = async (req, res, next) => {
   try {
     const tokenLS = req.headers.authorization;
     const auth = await new Promise((resolve, reject) => {
-      jwt.verify(tokenLS, process.env.JWT_PASS, (err, auth) => {
+      jwt.verify(tokenLS, "nyongpenyi", (err, auth) => {
         if (err) reject(new Error("Login Dulu"));
         resolve(auth);
       });
     });
     if (auth) {
-      return res.json({msg: 'Success check token'})
+      return res.json({ msg: "Success check token" });
     }
   } catch (e) {
     next(e);
   }
 };
-
-// exports.checkToken = (req, res) => {
-//   res.json({auth: true});
-// }
