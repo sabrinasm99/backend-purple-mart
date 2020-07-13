@@ -34,7 +34,7 @@ exports.loginAdmin = async (req, res, next) => {
         const token = await new Promise((resolve, reject) => {
           jwt.sign(
             payload,
-            "nyongpenyi",
+            "nyongpenyi" || process.env.JWT_PASS,
             { expiresIn: "30m" },
             (err, token) => {
               if (err) reject(err);
@@ -99,7 +99,7 @@ exports.loginMember = async (req, res, next) => {
         const token = await new Promise((resolve, reject) => {
           jwt.sign(
             payload,
-            "nyongpenyi",
+            "nyongpenyi" || process.env.JWT_PASS,
             { expiresIn: "30m" },
             (err, token) => {
               if (err) reject(err);
@@ -125,7 +125,7 @@ exports.checkToken = async (req, res, next) => {
   try {
     const tokenLS = req.headers.authorization;
     const auth = await new Promise((resolve, reject) => {
-      jwt.verify(tokenLS, "nyongpenyi", (err, auth) => {
+      jwt.verify(tokenLS, "nyongpenyi" || process.env.JWT_PASS, (err, auth) => {
         if (err) reject(new Error("Login Dulu"));
         resolve(auth);
       });

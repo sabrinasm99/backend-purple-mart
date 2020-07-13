@@ -5,7 +5,7 @@ const checkLogin = () => {
   return async (req, res, next) => {
     try {
       const auth = await new Promise((resolve, reject) => {
-        jwt.verify(req.headers.authorization, "nyongpenyi", (err, auth) => {
+        jwt.verify(req.headers.authorization, "nyongpenyi" || process.env.JWT_PASS, (err, auth) => {
           if (err) reject(new Error("Login Dulu"));
           resolve(auth);
         });
