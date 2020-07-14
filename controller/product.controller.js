@@ -1,7 +1,7 @@
 const Products = require("../model/Product");
 const fse = require("fs-extra");
 const Fuse = require('fuse.js');
-
+const axios = require('axios');
 const options = {
   includeScore: true,
   keys: ['name']
